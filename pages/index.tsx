@@ -7,6 +7,9 @@ import * as Three from 'three'
 import { useEffect, useRef } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Stats from 'three/examples/jsm/libs/stats.module'
+import * as dat from 'dat.gui'
+import { TeapotGeometry } from 'three/examples/jsm/geometries/TeapotGeometry'
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry'
 
 export default function Home() {
   const canvasRef = useRef()
@@ -36,10 +39,27 @@ export default function Home() {
     spotLight.position.set(0, 64, 32)
     scene.add(spotLight)
 
-    const boxGeometry = new Three.BoxGeometry(16, 16, 16)
-    const boxMaterial = new Three.MeshNormalMaterial()
+    const boxGeometry = new Three.BoxGeometry(24, 24, 24)
+    const boxMaterial = new Three.MeshPhongMaterial({ color: 0xff0000 })
     const boxMesh = new Three.Mesh(boxGeometry, boxMaterial)
+
     scene.add(boxMesh)
+    const gui = new dat.GUI()
+    gui.add(boxMesh.rotation, 'x', 0, Math.PI).name('Rotate X Axis')
+    gui.add(boxMesh.rotation, 'y', 0, Math.PI).name('Rotate Y Axis')
+    gui.add(boxMesh.rotation, 'x', 0, Math.PI).name('Rotate Z Axis')
+
+    gui.add(boxMesh.scale, 'x', 0, Math.PI).name('Scale Z Axis')
+    gui.add(boxMesh.scale, 'y', 0, Math.PI).name('Scale Z Axis')
+    gui.add(boxMesh.scale, 'x', 0, Math.PI).name('Scale Z Axis')
+
+    const materialParams = {
+      boxMeshColor: boxMesh.material.color.getHex(),
+    }
+    gui.add(boxMesh.material, 'wireframe')
+    gui
+      .addColor(materialParams, 'boxMeshColor')
+      .onChange((value) => boxMesh.material.color.set(value))
 
     //orbit control
     const controls = new OrbitControls(camera, renderer.domElement)
@@ -49,8 +69,10 @@ export default function Home() {
     document.body.appendChild(stats.dom)
 
     const animate = () => {
-      boxMesh.rotation.x += 0.01
-      boxMesh.rotation.y += 0.01
+      // boxMesh.rotation.x += 0.01
+      // boxMesh.rotation.y += 0.01
+      // cylinderMesh.rotation.x += 0.01
+      // cylinderMesh.rotation.y += 0.01
       stats.update()
       controls.update()
       renderer.render(scene, camera)
